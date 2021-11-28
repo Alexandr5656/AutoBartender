@@ -1,13 +1,17 @@
 import json
 import Drink as drinks
 import Pump as pumps
+from scale.hx711 import HX711
 class Bartender:
     pumpLocation = dict()
     drinkList = dict()
-    scale = float()
+    scale = HX711(5,6)
+
     def __init__(self):
         self.getPumps()
         self.getDrinks()
+        self.scale.set_reading_format("MSB", "MSB")
+        self.scale.set_reference_unit(113)
     def getPumps(self):
         #Set a place where I can do invalidate a drink if a pump is not there
         pumpLink = open('./src/pump.json')
@@ -30,6 +34,13 @@ class Bartender:
         #Create thread to get scale weight
         drinkRecipe = self.drinkList[drink].getRecipe()
         for ingredient in drinkRecipe:
-            while self.scale < drinkRecipe[ingredient]:
+            self.scale.reset()
+            self.scale.tare()
+            ###Maybe I should make a starting tare
+            while self.scale.get_gain(5) < drinkRecipe[ingredient]:
                 self.pumpLocation[ingredient].run
+                self.scale.power_down()
+                self.scale.power_up()
+                self.scale.sleep(0.1)
+
 

@@ -1,4 +1,4 @@
-#
+import sys
 
 import RPi.GPIO as GPIO
 import time
@@ -387,5 +387,9 @@ class HX711:
     def reset(self):
         self.power_down()
         self.power_up()
+
+    def cleanAndExit(self):
+        GPIO.cleanup()
+        sys.exit()
 
 # EOF - hx711.py
