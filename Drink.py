@@ -7,5 +7,7 @@ class Drink:
         self.recipe[ingredient] = amount
     def getRecipe(self):
         return self.recipe
+    def getName(self):
+        return self.name
 
 
