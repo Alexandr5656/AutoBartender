@@ -7,6 +7,6 @@ a = bar.Bartender()
 print(a.getList())
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-    mainWin = menu.AutoBartender(a)
+    mainWin = menu.AutoBartender(a,app)
     mainWin.show()
     sys.exit( app.exec_() )

@@ -1,6 +1,8 @@
 import sys
-from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtWidgets import QMainWindow, QLabel, QGridLayout, QWidget
+from PyQt5 import QtCore, QtWidgets, QtGui
+from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtWidgets import QMainWindow, QLabel, QGridLayout, QWidget, QVBoxLayout, QScrollArea, QListWidget, \
+    QScrollBar, QHBoxLayout
 from PyQt5.QtWidgets import QPushButton
 from PyQt5.QtCore import QSize
 from Drink import *
@@ -22,25 +24,52 @@ from Drink import *
 # TODO: Make menu object
 class AutoBartender(QMainWindow):
 
-    def __init__(self, bartender):
+    def __init__(self, bartender,app):
         QMainWindow.__init__(self)
         self.setMinimumSize(QSize(300, 200))
         self.setWindowTitle("PyQt button example - pythonprogramminglanguage.com")
         self.bartender = bartender
+        self.button_width = int(app.primaryScreen().size().width()/3)
+        self.button_height = int(app.primaryScreen().size().height()/3)
         self.createButtons()
         self.showMaximized()
-
         # TODO: Create Dynamic Buttons
 
     def createButtons(self):
         drinks = self.bartender.getList()
-        for r in range(len(drinks)):
-            pybutton = QPushButton(drinks[r].getName(), self)
-            pybutton.clicked.connect(lambda: self.bartender.makeDrink(drinks[r]))
-            pybutton.resize(100, 32)
-            # TODO: Work on button positioning and multiple pages?
-            pybutton.move(50, 50+(r*50))
+        self.scroll = QScrollArea()  # Scroll Area which contains the widgets, set as the centralWidget
+        self.widget = QWidget()  # Widget that contains the collection of Vertical Box
+        self.hbox = QHBoxLayout()  # The Vertical Box that contains the Horizontal Boxes of  labels and buttons
 
+        for x in range(len(drinks)):
+            pybutton = QPushButton()
+            pybutton.setText(drinks[x].getName())
+            pybutton.clicked.connect(lambda: self.bartender.makeDrink(drinks[x]))
+            # TODO: Work on button positioning and multiple pages?
+            pybutton.setFixedWidth(self.button_width)
+            pybutton.setFixedHeight(self.button_height)
+            #pybutton.setIcon(QtGui.QIcon('media/drinks/empty.png'))
+            pybutton.setStyleSheet(
+                """
+            background: url(media/drinks/empty.png);"""
+            )
+            self.hbox.addWidget(pybutton)
+
+        self.widget.setLayout(self.hbox)
+
+        # Scroll Area Properties
+        self.scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        self.scroll.setWidgetResizable(True)
+        self.scroll.setWidget(self.widget)
+
+        self.setCentralWidget(self.scroll)
+
+        #self.setGeometry(600, 100, 1000, 900)
+        self.setWindowTitle('Scroll Area Demonstration')
+        self.show()
+
+        return
     def clickMethod(self):
         print('Clicked Pyqt button.')
 
