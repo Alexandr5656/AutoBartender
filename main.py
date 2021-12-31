@@ -1,3 +1,5 @@
+from PyQt5.QtWidgets import QApplication
+
 import Bartender as bar
 import Menu as menu
 
@@ -6,7 +8,6 @@ from PyQt5 import QtWidgets
 a = bar.Bartender()
 print(a.getList())
 if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
-    mainWin = menu.AutoBartender(a,app)
-    mainWin.show()
-    sys.exit( app.exec_() )
+    app = QApplication(sys.argv)
+    w = menu.MainWindow(a)
+    sys.exit(app.exec_())

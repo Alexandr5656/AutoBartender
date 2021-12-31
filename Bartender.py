@@ -34,7 +34,6 @@ class Bartender:
         return self.drinkList
 
     def makeDrink(self,drink):
-        #Create thread to get scale weight
         print("ee")
         print(drink)
         print("asdasd")
