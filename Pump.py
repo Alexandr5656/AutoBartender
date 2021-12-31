@@ -6,7 +6,14 @@ class Pump:
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(pinNum, GPIO.OUT)
     def runPump(self):
-        GPIO.output(self.pin,GPIO.HIGH)
+        print(f"Starting pump {self.pin}")
+        GPIO.setup(self.pin, GPIO.OUT)  # GPIO Assign mode
+        GPIO.output(self.pin, GPIO.LOW)
+        #GPIO.output(self.pin,GPIO.LOW)
     def stopPump(self):
-        GPIO.output(self.pin,GPIO.LOW)
+        print(f"Stopping pump {self.pin}")
+        GPIO.output(self.pin,GPIO.HIGH)
+
+
+
 

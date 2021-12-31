@@ -5,7 +5,7 @@ import sys
 
 EMULATE_HX711 = False
 
-referenceUnit = 1
+referenceUnit = 453
 
 if not EMULATE_HX711:
     import RPi.GPIO as GPIO
@@ -24,7 +24,7 @@ def cleanAndExit():
     sys.exit()
 
 
-hx = HX711(5, 6)#Sets up unit with pin 5 and 6
+hx = HX711(16, 12)#Sets up unit with pin 5 and 6
 
 # I've found out that, for some reason, the order of the bytes is not always the same between versions of python, numpy and the hx711 itself.
 # Still need to figure out why does it change.

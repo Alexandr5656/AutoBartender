@@ -34,7 +34,7 @@ class DrinkMenu(object):
         self.alex()
         MainWindow.setCentralWidget(self.centralwidget)
     def alex(self):
-
+        pass
     def createButtons(self):
         self.bartender = Bartender()
         drinks = self.bartender.getList()
@@ -63,7 +63,7 @@ class DrinkMenu(object):
         self.scroll.setWidget(self.widget)
 
         #mainWindow.setCentralWidget(self.scroll)
-``
+
 
 class MainWindow(QMainWindow):
     def __init__(self, bartender, parent=None,):
