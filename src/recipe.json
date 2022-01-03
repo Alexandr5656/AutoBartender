@@ -1,42 +1,11 @@
 {
-   "Happy":{
-      "Vodka":2,
-      "Rum":2
+   "RumAndCoke":{
+      "Rum":2,
+      "Coke":2
    },
-   "Test":{
+   "VodkaSprite": {
       "Vodka":2,
-      "Rum":2
-   },
-   "Alex":{
-      "Vodka":2,
-      "Rum":2
-   },
-   "Angel":{
-      "Vodka":2,
-      "Rum":2
-   },
-      "aeaerrAngel":{
-      "Vodka":2,
-      "Rum":2
-   },
-   "aeaeAneegel":{
-      "Vodka":2,
-      "Rum":2
-   },
-   "aeaeAerngel":{
-      "Vodka":2,
-      "Rum":2
-   },
-   "aeaewerweAngel":{
-      "Vodka":2,
-      "Rum":2
-   },
-   "aeaeAngel":{
-      "Vodka":2,
-      "Rum":2
-   },
-   "Aaenwegel":{
-      "Vodka":2,
-      "Rum":2
+      "Sprite":8
    }
+
 }
