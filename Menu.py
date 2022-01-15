@@ -3,25 +3,43 @@ from functools import partial
 
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMainWindow, QWidget, QScrollArea, QHBoxLayout
+from PyQt5.QtWidgets import QMainWindow, QWidget, QScrollArea, QHBoxLayout, QLabel
 from PyQt5.QtWidgets import QPushButton
 from PyQt5.QtCore import QSize
 
 from Bartender import Bartender
 from Drink import *
 
-
+# TODO: Create selection menu
+# TODO: On selection menu have a stronger weaker normal and virgin option
 class MainMenu(object):
-    def setupUI(self, MainWindow):
-        MainWindow.setWindowTitle("UIWindow")
+    def setupUI(self, MainWindow, bartender):
+        MainWindow.setWindowTitle("AutoBartender Main Menu")
         self.centralwidget = QWidget(MainWindow)
-        self.CPSBTN = QPushButton('Drink Menu', self.centralwidget)
-        self.CPSBTN.move(10, 10)
+        self.AutoMenu = QPushButton('Drink Menu', self.centralwidget)
+        self.AutoMenu.move(int(MainWindow.size().width() / 10), int(MainWindow.size().height()/10))
+        self.AutoMenu.setFixedSize(int(MainWindow.size().width()/3),int(MainWindow.size().height()/4*3))
+        self.SettingMenu = QPushButton('Settings Menu', self.centralwidget)
+        self.SettingMenu.move(int(MainWindow.size().width() / 10 * 5), int(MainWindow.size().height() / 10))
+        self.SettingMenu.setFixedSize(int(MainWindow.size().width() / 3), int(MainWindow.size().height() / 4 * 3))
         MainWindow.setCentralWidget(self.centralwidget)
 
-#
+class DrinkSelection(object):
+    def setupUI(self, MainWindow, bartender, drink):
+        MainWindow.setWindowTitle("Drink Selection")
+        self.centralwidget = QWidget(MainWindow)
+        self.StrengthLevel = QLabel("Strength Level", self.centralwidget)
+        self.StrengthLevel.move(100,10)
+        self.makeDrinkBTN = QPushButton(f"Make {drink}", self.centralwidget)
+        self.makeDrinkBTN.move(int(MainWindow.size().width() / 10 * 5), int(MainWindow.size().height() / 10))
+        self.makeDrinkBTN.setFixedSize(int(MainWindow.size().width() / 3), int(MainWindow.size().height() / 4 * 3))
+        self.backButton = QPushButton("Back", self.centralwidget)
+        self.backButton.move(10, 10)
+        MainWindow.setCentralWidget(self.centralwidget)
+
+
 class DrinkMenu(object):
-    def setupUI(self, MainWindow, app):
+    def setupUI(self, MainWindow, bartender, app):
         MainWindow.setGeometry(0, 0, app.primaryScreen().size().width(), app.primaryScreen().size().height())
         MainWindow.setFixedSize(app.primaryScreen().size().width(), app.primaryScreen().size().height())
         MainWindow.setWindowTitle("UIToolTab")
@@ -32,9 +50,6 @@ class DrinkMenu(object):
         self.button_height = int(app.primaryScreen().size().height() / 3)
         self.createButtons()
         MainWindow.setCentralWidget(self.centralwidget)
-
-    def alex(self,drinke):
-        print("{}%".format(drinke))
 
     def createButtons(self):
         self.bartender = Bartender()
@@ -64,23 +79,30 @@ class DrinkMenu(object):
         self.scroll.move(0,int(self.button_height/2))
 
 class MainWindow(QMainWindow):
-    def __init__(self, bartender,app, parent=None,):
+    def __init__(self, bartender, app, parent=None,):
         super(MainWindow, self).__init__(parent)
         self.setFixedWidth(app.primaryScreen().size().width())
         self.setFixedHeight(app.primaryScreen().size().height())
         self.app = app
         self.uiMainMenu = MainMenu()
         self.uiDrinkMenu = DrinkMenu()
+        self.uiDrinkSelector = DrinkSelection()
         self.startMainMenu()
+        self.bartender = bartender
 
     def startMainMenu(self):
-        self.uiMainMenu.setupUI(self)
-        self.uiMainMenu.CPSBTN.clicked.connect(self.startDrinkMenu)
+        self.uiMainMenu.setupUI(self, self.bartender)
+        self.uiMainMenu.AutoMenu.clicked.connect(self.startDrinkMenu)
         self.show()
 
     def startDrinkMenu(self):
-        self.uiDrinkMenu.setupUI(self,self.app)
+        self.uiDrinkMenu.setupUI(self, self.bartender, self.app)
         self.uiDrinkMenu.ToolsBTN.clicked.connect(self.startMainMenu)
+        self.uiDrinkMenu.createButtons()
+        self.show()
+    def startDrinkSelector(self, drinkPicked):
+        self.uiDrinkMenu.setupUI(self, self.bartender, drinkPicked)
+        self.uiDrinkSelector.backButton.clicked.connect(self.startMainMenu)
         self.uiDrinkMenu.createButtons()
         self.show()
 
