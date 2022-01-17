@@ -6,5 +6,8 @@
    "VodkaSprite": {
       "Vodka":2,
       "Sprite":8
+   },
+   "Alex": {
+      "alee": 2
    }
 }

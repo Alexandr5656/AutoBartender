@@ -25,21 +25,62 @@ class MainMenu(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
 class DrinkSelection(object):
+
+    #TODO:Set up indiviual liquor levels
+    #TODO:Set up cup size levels
     def setupUI(self, MainWindow, bartender, drink):
+        self.bartender = bartender
+        self.drink = drink
+        self.level = 1
         MainWindow.setWindowTitle("Drink Selection")
         self.centralwidget = QWidget(MainWindow)
-        self.StrengthLevel = QLabel("Strength Level", self.centralwidget)
-        self.StrengthLevel.move(100,10)
+
+        #Strength Label
+        self.StrengthLevel = QLabel("Strength Level: 1 ", self.centralwidget)
+        self.StrengthLevel.move(int(MainWindow.size().width()/2),10)
+
+        #Increase
+        self.makeStrongerBTN = QPushButton("Make Stronger", self.centralwidget)
+        self.makeStrongerBTN.setFixedSize(100,100)
+        self.makeStrongerBTN.move((int(MainWindow.size().width()/4) * 3), 10)
+        self.makeStrongerBTN.clicked.connect(self.increase)
+
+        #Decrease
+        self.makeWeakerBTN = QPushButton("Make Weaker", self.centralwidget)
+        self.makeWeakerBTN.setFixedSize(100, 100)
+        self.makeWeakerBTN.move(int((MainWindow.size().width() / 4)), 10)
+        self.makeWeakerBTN.clicked.connect(self.decrease)
+
+        #Drink Button
         self.makeDrinkBTN = QPushButton(f"Make {drink}", self.centralwidget)
-        self.makeDrinkBTN.move(int(MainWindow.size().width() / 10 * 5), int(MainWindow.size().height() / 10))
+        self.makeDrinkBTN.move(int(MainWindow.size().width() / 3), int(MainWindow.size().height() / 10))
         self.makeDrinkBTN.setFixedSize(int(MainWindow.size().width() / 3), int(MainWindow.size().height() / 4 * 3))
+        self.makeDrinkBTN.clicked.connect(partial(bartender.makeDrink, drink=drink,level=self.level))
+        #self.makeDrinkBTN.clicked.connect(self.makeThisDrink)
+
+        #Back Button
         self.backButton = QPushButton("Back", self.centralwidget)
         self.backButton.move(10, 10)
         MainWindow.setCentralWidget(self.centralwidget)
+    def decrease(self):
+        if self.level<=0:
+            return
+        self.level = self.level-1
+        self.StrengthLevel.setText(f"Strength Level: {self.level}")
+
+    def increase(self):
+        if self.level>=3:
+            return
+        self.level = self.level+1
+        self.StrengthLevel.setText(f"Strength Level: {self.level}")
+
+    def makeThisDrink(self,drink,level):
+        self.bartender.makeDrink(drink,level)
 
 
 class DrinkMenu(object):
     def setupUI(self, MainWindow, bartender, app):
+        self.MainWindow = MainWindow
         MainWindow.setGeometry(0, 0, app.primaryScreen().size().width(), app.primaryScreen().size().height())
         MainWindow.setFixedSize(app.primaryScreen().size().width(), app.primaryScreen().size().height())
         MainWindow.setWindowTitle("UIToolTab")
@@ -63,7 +104,7 @@ class DrinkMenu(object):
             self.buttons[-1].setText(drink)
             self.buttons[-1].setFixedWidth(self.button_width)
             self.buttons[-1].setFixedHeight(self.button_height*2)
-            self.buttons[-1].clicked.connect(partial(self.bartender.makeDrink, drink=drink))
+            self.buttons[-1].clicked.connect(partial(self.MainWindow.startDrinkSelector, drinkPicked=drink))
             self.buttons[-1].setIcon(QtGui.QIcon('media/drinks/empty.png'))
             self.buttons[-1].setIconSize(QSize(int(self.button_width/3),int(self.button_height/3)))
             self.hbox.addWidget(self.buttons[-1])
@@ -81,6 +122,7 @@ class DrinkMenu(object):
 class MainWindow(QMainWindow):
     def __init__(self, bartender, app, parent=None,):
         super(MainWindow, self).__init__(parent)
+        self.bartender = bartender
         self.setFixedWidth(app.primaryScreen().size().width())
         self.setFixedHeight(app.primaryScreen().size().height())
         self.app = app
@@ -88,7 +130,6 @@ class MainWindow(QMainWindow):
         self.uiDrinkMenu = DrinkMenu()
         self.uiDrinkSelector = DrinkSelection()
         self.startMainMenu()
-        self.bartender = bartender
 
     def startMainMenu(self):
         self.uiMainMenu.setupUI(self, self.bartender)
@@ -101,9 +142,8 @@ class MainWindow(QMainWindow):
         self.uiDrinkMenu.createButtons()
         self.show()
     def startDrinkSelector(self, drinkPicked):
-        self.uiDrinkMenu.setupUI(self, self.bartender, drinkPicked)
-        self.uiDrinkSelector.backButton.clicked.connect(self.startMainMenu)
-        self.uiDrinkMenu.createButtons()
+        self.uiDrinkSelector.setupUI(self, self.bartender, drinkPicked)
+        self.uiDrinkSelector.backButton.clicked.connect(self.startDrinkMenu)
         self.show()
 
 # TODO: Make menu object
